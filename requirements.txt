@@ -1,0 +1,5 @@
+Flask==2.0.1
+Jinja2==3.0.1
+Werkzeug==2.0.1
+gunicorn==20.1.0
+sqlite3==0.0.0  # Note: sqlite3 is included in Python's standard library, so it's not necessary to list it here.

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="heading">
+    <h1>Personal Task Manager</h1>
+    </div>
+    <div id="task-form">
+        <h2>Add a New Task</h2>
+        <form id="add-task-form" method="post">
+            <input type="text" name="title" placeholder="Task Title" required>
+            <textarea name="description" placeholder="Task Description"></textarea>
+            <input type="date" name="due_date">
+            <select name="priority">
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+            </select>
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+    
+    <div id="sorting-tab">
+        <select id="sorting-algorithms">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+        </select>
+        <button id="sort-tasks">Sort Tasks</button>
+    </div>  
+    <div id="timing-display"></div>
+    <div id="tasks-list">
+        <h2>Tasks</h2>
+
+        <ul>
+            {% for task in tasks %}
+            <li id="task-{{ task.id }}">
+                <form id="edit-form-{{ task.id }}" class="edit-form" style="display:none;">
+                    <input type="text" name="title" value="{{ task.title }}" required>
+                    <textarea name="description">{{ task.description }}</textarea>
+                    <input type="date" name="due_date" value="{{ task.due_date }}">
+                    <select name="priority">
+                        <option value="1" {% if task.priority == 1 %}selected{% endif %}>Low</option>
+                        <option value="2" {% if task.priority == 2 %}selected{% endif %}>Medium</option>
+                        <option value="3" {% if task.priority == 3 %}selected{% endif %}>High</option>
+                    </select>
+                    <button type="submit">Update Task</button>
+                </form>
+            <span class="task-details">
+                    <span class="task-title">{{ task.title }}</span> 
+                    <span class="task-description">{{ task.description }}</span> 
+                    <span class="task-due-date">{{ task.due_date }}</span>
+            </span>    
+            <div class="task-actions">
+                    <button type="button" class="edit-task" data-task-id="{{ task.id }}" aria-label="Edit task {{ task.title }}">Edit</button>
+                    <button type="button" class="delete-task" data-task-id="{{ task.id }}" aria-label="Delete task {{ task.title }}">Delete</button>
+                    <input type="checkbox" class="mark-done" data-task-id="{{ task.id }}" id="done-{{ task.id }}" {% if task.completion_status %} checked {% endif %}>
+                    <label for="done-{{ task.id }}">Done</label>
+            </div>    
+            </li>
+            {% else %}
+            <li>No tasks found</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script type="application/json" id="tasks-data">
+        {{ tasks | tojson | safe }}
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}">
+    </script>
+</body>
+</html>
