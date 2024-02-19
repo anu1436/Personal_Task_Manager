@@ -25,8 +25,7 @@ To set up the Personal Task Manager locally, follow these steps:
 
 2. **Install dependencies**
 Navigate to the project directory and install the required Python packages:
-
-## pip install -r requirements.txt
+ pip install -r requirements.txt
 
 
 3. **Contributing**
