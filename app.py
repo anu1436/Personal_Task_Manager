@@ -16,7 +16,7 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row  # This allows us to have dict-like access to columns
+        db.row_factory = sqlite3.Row  
     return db
 
 @app.teardown_appcontext
@@ -41,36 +41,28 @@ def index():
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
-    # Retrieve form data from request.form and insert it into the database
     title = request.form['title']
     description = request.form.get('description', '')
     due_date = request.form.get('due_date')
     priority = int(request.form.get('priority', 0))
-    completion_status = 0  # Assuming a new task is not completed
+    completion_status = 0 
 
-    # Establish a database connection and create a cursor
     db = get_db()
     cursor = db.cursor()
 
     try:
-        # Insert the new task into the tasks table
+       
         cursor.execute('INSERT INTO tasks (title, description, due_date, priority, completion_status) VALUES (?, ?, ?, ?, ?)', 
                        (title, description, due_date, priority, completion_status))
-        
-        # Commit the changes
         db.commit()
     except sqlite3.IntegrityError as e:
-        # Rollback the changes on error
         db.rollback()
         return jsonify({"success": False, "message": "Database error: " + str(e)}), 500
     finally:
-        # Close the cursor
         cursor.close()
 
-    # Return a success message
     return jsonify({"success": True, "message": "Task added successfully"})
 
-# ... [rest of your current code] ...
 
 @app.route('/edit_task/<int:task_id>', methods=['POST'])
 def edit_task(task_id):
@@ -132,8 +124,6 @@ def mark_task_as_done(task_id, status):
 def get_tasks():
     tasks = query_db('SELECT * FROM tasks')
     return jsonify(tasks)
-
-# ... [rest of your current code] ...
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchall()
@@ -142,5 +132,5 @@ def query_db(query, args=(), one=False):
 
 
 if __name__ == "__main__":
-    init_db(app)  # Initialize the database
+    init_db(app)  
     app.run(debug=True)
